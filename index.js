@@ -30,6 +30,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const AllFoodItems = client.db("eatLink").collection("AllFoodItems");
+    const UserCollection = client.db("eatLink").collection("user");
 
     app.get("/allfooditems",async(req,res)=>{
     const result=await AllFoodItems.find().toArray();
@@ -69,7 +70,17 @@ async function run() {
         console.log(result)
         res.send(result);
       })
+// user info
+app.post("/user",async(req,res)=>{
+    const user=req.body;
+    const result=await UserCollection.insertOne(user)
+    res.send(result)
+})
 
+app.get("/user",async(req,res)=>{
+    const result=await UserCollection.find().toArray();
+    res.send(result)
+})
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
