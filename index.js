@@ -30,6 +30,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const AllFoodItems = client.db("eatLink").collection("AllFoodItems");
+    const OrderedItems = client.db("eatLink").collection("OrderedItems");
     const UserCollection = client.db("eatLink").collection("user");
 
     app.get("/allfooditems",async(req,res)=>{
@@ -52,6 +53,22 @@ async function run() {
         console.log("purchase",result)
         res.send(result)
     })
+// ordered item
+
+app.post("/orderedItem",async(req,res)=>{
+  const item=req.body;
+  console.log(item)
+    const result=await OrderedItems.insertOne(item)
+    console.log(result)
+    res.send(result)
+})
+
+app.get("/orderedItem",async(req,res)=>{
+  const result=await OrderedItems.find().toArray();
+    res.send(result)
+})
+
+
 // pagination
     app.get('/itemsCount', async (req, res) => {
         const count = await AllFoodItems.estimatedDocumentCount();
