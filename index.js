@@ -33,6 +33,14 @@ async function run() {
     const OrderedItems = client.db("eatLink").collection("OrderedItems");
     const UserCollection = client.db("eatLink").collection("user");
 
+    
+    app.post("/allfooditems",async(req,res)=>{
+      const item=req.body;
+      // console.log(item)
+        const result=await AllFoodItems.insertOne(item)
+        // console.log(result)
+        res.send(result)
+      })
     app.get("/allfooditems",async(req,res)=>{
     const result=await AllFoodItems.find().toArray();
     res.send(result)
@@ -45,6 +53,7 @@ async function run() {
         // console.log(result)
         res.send(result)
     })
+
     app.get("/purchase/:id",async(req,res)=>{
         const id=req.params.id;
         console.log(id)
@@ -57,17 +66,35 @@ async function run() {
 
 app.post("/orderedItem",async(req,res)=>{
   const item=req.body;
-  console.log(item)
+  // console.log(item)
     const result=await OrderedItems.insertOne(item)
-    console.log(result)
+    // console.log(result)
     res.send(result)
 })
 
 app.get("/orderedItem",async(req,res)=>{
-  const result=await OrderedItems.find().toArray();
+  console.log(req.query.email);
+  let query = {};
+  if (req.query?.email) {
+      query = { email: req.query.email }
+  }
+  const result=await OrderedItems.find(query).toArray();
     res.send(result)
 })
 
+app.get("/orderedOneItem/:id",async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)}
+  const result=await OrderedItems.findOne(query)
+  res.send(result)
+})
+
+app.delete("/orderedOneItem/:id",async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)}
+  const result=await OrderedItems.deleteOne(query)
+  res.send(result)
+})
 
 // pagination
     app.get('/itemsCount', async (req, res) => {
