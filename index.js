@@ -45,6 +45,27 @@ async function run() {
     const result=await AllFoodItems.find().toArray();
     res.send(result)
     })
+    // user added food
+    app.get("/userAddedFood",async(req,res)=>{
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+          query = { email: req.query.email }
+      }
+      const result=await AllFoodItems.find(query).toArray();
+        res.send(result)
+    })
+
+
+    app.get("/updateItem/:id",async(req,res)=>{
+      const id=req.params.id;
+      console.log(id)
+      const query={_id:new ObjectId(id)}
+      const result=await AllFoodItems.findOne(query);
+      console.log("update",result)
+      res.send(result)
+  })
+
     app.get("/allfooditems/:id",async(req,res)=>{
         const id=req.params.id;
         // console.log(id)
