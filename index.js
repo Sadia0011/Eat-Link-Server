@@ -55,7 +55,7 @@ async function run() {
       const result=await AllFoodItems.find(query).toArray();
         res.send(result)
     })
-
+// update food
 
     app.get("/updateItem/:id",async(req,res)=>{
       const id=req.params.id;
@@ -65,6 +65,33 @@ async function run() {
       console.log("update",result)
       res.send(result)
   })
+
+  app.put("/updateItem/:id", async (req, res) => {
+    const id = req.params.id;
+    const filter = {
+        _id: new ObjectId(id)
+    }
+    const options = {
+        upsert: true
+    }
+    const item = req.body;
+    const updatedItem = {
+        $set: {
+          img:item.img,
+          food_name:item.food_name,
+          category:item.category,
+          quantity:item.quantity,
+          price:item.price,
+          description:item.description,
+          made_by:item.made_by,
+          food_origin:item.food_origin,
+          email:item.email
+        }
+    }
+    const result = await AllFoodItems.updateOne(filter, updatedItem, options);
+    res.send(result)
+})
+
 
     app.get("/allfooditems/:id",async(req,res)=>{
         const id=req.params.id;
