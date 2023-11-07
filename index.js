@@ -81,6 +81,7 @@ async function run() {
           food_name:item.food_name,
           category:item.category,
           quantity:item.quantity,
+          order:item.order,
           price:item.price,
           description:item.description,
           made_by:item.made_by,
@@ -111,7 +112,7 @@ async function run() {
         res.send(result)
     })
 
-// quantity reduce
+// quantity reduce and order increase
 
 app.patch("/updateQuantity/:id", async (req, res) => {
   const id = req.params.id;
@@ -134,24 +135,11 @@ app.patch("/updateQuantity/:id", async (req, res) => {
 })
 
 
-app.patch("/makeUnavailable/:id", async (req, res) => {
-  const id = req.params.id;
-  const filter = {
-    _id: new ObjectId(id)
-  }
-  const item=req.body
-  console.log("available",item)
-  const updatedAvailability = {
-    $set: {
-      isAvailable: false 
-    }
-  }
-  console.log(updatedAvailability)
-  const result = await AllFoodItems.updateOne(filter, updatedAvailability);
-  console.log("result from update Availability",result)
-  res.send(result)
-})
-
+// top product
+app.get("/topProduct", async (req, res) => {
+  const result = await AllFoodItems.find().sort({ order: -1 }).toArray();
+  res.send(result);
+});
 
 
 // ordered item
