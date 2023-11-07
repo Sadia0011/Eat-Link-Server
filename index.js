@@ -110,6 +110,50 @@ async function run() {
         console.log("purchase",result)
         res.send(result)
     })
+
+// quantity reduce
+
+app.patch("/updateQuantity/:id", async (req, res) => {
+  const id = req.params.id;
+  const filter = {
+    _id: new ObjectId(id)
+  }
+  const item = req.body;
+  console.log("patch",typeof(item.quantity))
+  const updatedQuantity = {
+    $set: {
+      quantity: item.quantity,
+      order:item.order
+    },
+  }
+  
+  console.log(updatedQuantity)
+  const result = await AllFoodItems.updateOne(filter, updatedQuantity);
+  console.log("result from update quantity",result)
+  res.send(result)
+})
+
+
+app.patch("/makeUnavailable/:id", async (req, res) => {
+  const id = req.params.id;
+  const filter = {
+    _id: new ObjectId(id)
+  }
+  const item=req.body
+  console.log("available",item)
+  const updatedAvailability = {
+    $set: {
+      isAvailable: false 
+    }
+  }
+  console.log(updatedAvailability)
+  const result = await AllFoodItems.updateOne(filter, updatedAvailability);
+  console.log("result from update Availability",result)
+  res.send(result)
+})
+
+
+
 // ordered item
 
 app.post("/orderedItem",async(req,res)=>{
@@ -137,6 +181,7 @@ app.get("/orderedOneItem/:id",async(req,res)=>{
   res.send(result)
 })
 
+// delete
 app.delete("/orderedOneItem/:id",async(req,res)=>{
   const id=req.params.id;
   const query={_id:new ObjectId(id)}
